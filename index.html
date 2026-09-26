@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>After School</title>
+    <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+</head>
+<body>
+    <script type="module">
+        const {createApp} = Vue
+        const myApp = createApp({
+            data(){
+                return {
+                    subjects:[
+                        {
+                            name: "Mathematics",
+                            location: "Ealing",
+                            price: "£120",
+                            img_data: {
+                                image: 'images/math.jpg',
+                                alt: "Teacher at whiteboard"
+                            } 
+                        },
+                        {
+                            name: "Science",
+                            location: "Wembley",
+                            price: "£80",
+                            img_data: {
+                                image: 'images/science.jpg',
+                                alt: "Man using electronic microscope"
+                            } 
+                        },
+                        {
+                            name: "History",
+                            location: "Wembley",
+                            price: "£150",
+                            img_data: {
+                                image: 'images/history.jpg',
+                                alt: "Library"
+                            }   
+                        }
+            ]}
+            }
+        })
+        myApp.mount('#mydiv');
+    </script> 
+    <div id="mydiv">
+        <h1>Classes</h1>
+        <p>Available Classes:</p>
+        <div v-for="subject in subjects">
+            <p>{{subject.name}}, Location: {{subject.location}}, Price: {{subject.price}}</p>
+            <img v-bind:src="subject.img_data.image" v-bind:alt="subject.img_data.alt" width =600">
+        </div>
+    </div>
+</body>
+
+</html>
