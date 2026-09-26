@@ -39,6 +39,69 @@
                                 image: 'images/history.jpg',
                                 alt: "Library"
                             }   
+                        },
+                        {
+                            name: "Geography",
+                            location: "Acton",
+                            price: "£90",
+                            img_data: {
+                                image: 'images/geography.jpg',
+                                alt: "Close-up of a vintage globe showing Asia"
+                            }
+                        },
+                        {
+                            name: "Art",
+                            location: "Ealing",
+                            price: "£70",
+                            img_data: {
+                                image: 'images/art.jpg',
+                                alt: "Hand painting with a brush over a watercolour palette"
+                            }
+                        },
+                        {
+                            name: "Music",
+                            location: "Harrow",
+                            price: "£100",
+                            img_data: {
+                                image: 'images/music.jpg',
+                                alt: "Person wearing headphones playing an acoustic guitar beside a keyboard and laptop"
+                            }
+                        },
+                        {
+                            name: "English",
+                            location: "Wembley",
+                            price: "£85",
+                            img_data: {
+                                image: 'images/english.jpg',
+                                alt: "Open book with pages fanned out against a dark background"
+                            }
+                        },
+                        {
+                            name: "Computing",
+                            location: "Ealing",
+                            price: "£110",
+                            img_data: {
+                                image: 'images/computing.jpg',
+                                alt: "Lines of colourful code on a computer screen"
+                            }
+                        },
+                        {
+                            name: "PE",
+                            location: "Acton",
+                            price: "£60",
+                            img_data: {
+                                image: 'images/pe.jpg',
+                                alt: "Indoor sports hall with a basketball hoop and goal net"
+                            }
+                        },
+                        {
+                            name: "Drama",
+                            location: "Harrow",
+                            price: "£95",
+                            img_data: {
+                                image: 'images/drama.jpg',
+                                alt: "Actors standing on a lit stage"
+                            }
                         }
             ]}
             }
@@ -47,12 +110,70 @@
     </script> 
     <div id="mydiv">
         <h1>Classes</h1>
-        <p>Available Classes:</p>
-        <div v-for="subject in subjects">
-            <p>{{subject.name}}, Location: {{subject.location}}, Price: {{subject.price}}</p>
-            <img v-bind:src="subject.img_data.image" v-bind:alt="subject.img_data.alt" width =600">
-        </div>
+        <p>Available classes, taught by people who <mark>love the subject</mark>.</p>
+
+        <ul>
+            <li v-for="subject in subjects">
+                <img v-bind:src="subject.img_data.image" v-bind:alt="subject.img_data.alt">
+                <div>
+                    <h2>{{subject.name}}</h2>
+                    <p>{{subject.location}} · {{subject.price}}</p>
+                </div>
+            </li>
+        </ul>
     </div>
+
+    <style>
+        body {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 48px 24px;
+            background: #fbf8f1;
+            color: #1d1d1b;
+            font: 18px/1.5 system-ui, sans-serif;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 64px;
+            font-weight: 900;
+        }
+
+        mark {
+            background: #ffe86a;
+        }
+
+        ul {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 32px;
+            padding: 0;
+            list-style: none;
+        }
+
+        li {
+            border: 2px solid #1d1d1b;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #fff;
+            box-shadow: 6px 6px 0 #1d1d1b;
+        }
+
+        li img {
+            display: block;
+            width: 100%;
+            aspect-ratio: 2 / 3;
+            object-fit: cover;
+        }
+
+        li div {
+            padding: 16px 24px;
+        }
+
+        h2, li p {
+            margin: 0;
+        }
+    </style>
 </body>
 
 </html>
