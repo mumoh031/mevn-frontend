@@ -125,24 +125,44 @@
                                 alt: "Actors standing on a lit stage"
                             }
                         }
-            ]}
+            ],
+                    cart: [],
+                    showProduct: true
+                }
+            },
+            methods: {
+                toggleCheckout(){
+                    this.showProduct = !this.showProduct
+                },
+                addItem(subject){
+                    this.cart.push(subject.id)
+                },
             }
         })
         myApp.mount('#mydiv');
     </script> 
     <div id="mydiv">
-        <h1>Classes</h1>
-        <p>Available classes, taught by people who <mark>love the subject</mark>.</p>
+        <div v-if="showProduct">
+            <h1>Classes</h1>
+            <p>Available classes, taught by people who <mark>love the subject</mark>.</p>
+            <button v-on:click="toggleCheckout">Checkout</button>
 
-        <ul>
-            <li v-for="subject in subjects">
-                <img v-bind:src="subject.img_data.image" v-bind:alt="subject.img_data.alt">
-                <div>
-                    <h2>{{subject.name}}</h2>
-                    <p>{{subject.location}} · {{subject.price}}</p>
-                </div>
-            </li>
-        </ul>
+            <ul>
+                <li v-for="subject in subjects">
+                    <img v-bind:src="subject.img_data.image" v-bind:alt="subject.img_data.alt">
+                    <div>
+                        <h2>{{subject.name}}</h2>
+                        <p>{{subject.location}} · {{subject.price}}</p>
+                        <button v-on:click="addItem(subject)">Add to cart</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div v-else>
+            <h1>Checkout</h1>
+            <button v-on:click="toggleCheckout">Back to classes</button>
+        </div>
     </div>
 
     <style>
