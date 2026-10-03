@@ -137,6 +137,16 @@
                 addItem(subject){
                     this.cart.push(subject.id)
                 },
+            },
+            computed: {
+                cartSubjects(){
+                    const subjectsInCart = []
+                    for (const id of this.cart) {
+                        const match = this.subjects.find(subject => subject.id === id)
+                        subjectsInCart.push(match)
+                    }
+                    return subjectsInCart
+                }
             }
         })
         myApp.mount('#mydiv');
@@ -161,6 +171,10 @@
 
         <div v-else>
             <h1>Checkout</h1>
+            <div class="cart">
+                <p v-if="!cartSubjects.length">No classes added yet.</p>
+                <p v-for="subject in cartSubjects">{{subject.name}} · {{subject.price}}</p>
+            </div>
             <button v-on:click="toggleCheckout">Back to classes</button>
         </div>
     </div>
