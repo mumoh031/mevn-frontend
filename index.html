@@ -84,7 +84,6 @@
                             id: 7,
                             name: "English",
                             location: "Wembley",
-                            availableInventory: 10,
                             price: "£85",
                             availableInventory: 10,
                             img_data: {
@@ -137,6 +136,18 @@
                 addItem(subject){
                     this.cart.push(subject.id)
                 },
+                spotsLeft(subject){
+                    let timesInCart = 0
+                    for (const id of this.cart) {
+                        if (id === subject.id) {
+                            timesInCart = timesInCart + 1
+                        }
+                    }
+                    return subject.availableInventory - timesInCart
+                },
+                canAddToCart(subject){
+                    return this.spotsLeft(subject) > 0
+                }
             },
             computed: {
                 cartItemCount(){
@@ -166,7 +177,8 @@
                     <div>
                         <h2>{{subject.name}}</h2>
                         <p>{{subject.location}} · {{subject.price}}</p>
-                        <button v-on:click="addItem(subject)">Add to cart</button>
+                        <p>{{spotsLeft(subject)}} spots left</p>
+                        <button v-on:click="addItem(subject)" v-bind:disabled="!canAddToCart(subject)">Add to cart</button>
                     </div>
                 </li>
             </ul>
