@@ -23,7 +23,7 @@
                             img_data: {
                                 image: 'images/math.jpg',
                                 alt: "Teacher at whiteboard"
-                            } 
+                            }
                         },
                         {
                             id: 2,
@@ -34,7 +34,7 @@
                             img_data: {
                                 image: 'images/science.jpg',
                                 alt: "Man using electronic microscope"
-                            } 
+                            }
                         },
                         {
                             id: 3,
@@ -45,7 +45,7 @@
                             img_data: {
                                 image: 'images/history.jpg',
                                 alt: "Library"
-                            }   
+                            }
                         },
                         {
                             id: 4,
@@ -164,7 +164,7 @@
             }
         })
         myApp.mount('#mydiv');
-    </script> 
+    </script>
     <div id="mydiv">
         <div v-if="showProduct">
             <h1>Classes</h1>
@@ -243,6 +243,30 @@
 
         h2, li p {
             margin: 0;
+        }
+        .cart {
+            margin-bottom: 32px;
+        }
+
+        .cart p {
+            margin: 4px 0 0;
+        }
+
+        button {
+            margin-top: 16px;
+            padding: 8px 16px;
+            border: 2px solid #1d1d1b;
+            border-radius: 8px;
+            background: #ffe86a;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #eee;
+            color: #999;
+            cursor: not-allowed;
         }
     </style>
 </body>
