@@ -125,8 +125,13 @@
                             }
                         }
             ],
-                    cart: [],
-                    showProduct: true
+            cart: [],
+            order: {
+                name: "",
+                phoneNumber: "",
+            },
+            showProduct: true
+
                 }
             },
             methods: {
@@ -150,7 +155,19 @@
                 },
                 removeSubjectFromCart(subject){
                     this.cart.splice(subject, 1)
+                },
+                canSubmitOrder(){
+                    // true only once both name and phone number have real content
+                    return this.order.name.trim() !== "" && this.order.phoneNumber.trim() !== ""
+                },
+                submitOrder(){
+                    alert(`Thanks ${this.order.name}, your order is in! We'll reach you on ${this.order.phoneNumber}.`)
+                    this.cart = []
+                    this.order.name = ""
+                    this.order.phoneNumber = ""
+                    this.showProduct = true
                 }
+                //TODO: Add methods to sort subjects by subject, location, price, or spaces (i.e. availability)
             },
             computed: {
                 cartItemCount(){
@@ -192,11 +209,16 @@
             <h1>Checkout</h1>
             <div class="cart">
                 <p v-if="!cartItemCount">No classes added yet.</p>
-                <!-- TODO: remove subject from cart button -->
+
                 <li v-for="subject in cartSubjects">
                     <p>{{subject.name}} · {{subject.price}}</p>
                     <button v-on:click="removeSubjectFromCart(subject)">Remove from Cart</button>
                 </li>
+                <h2>Customer Info</h2>
+                <p>Name: <input v-model="order.name"></p>
+                <p>Phone Number: <input v-model="order.phoneNumber"></p>
+
+                <button v-on:click="submitOrder" v-bind:disabled="!canSubmitOrder()">Submit Order</button>
             </div>
             <button v-on:click="toggleCheckout">Back to classes</button>
         </div>
