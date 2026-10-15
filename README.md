@@ -1,2 +1,2 @@
-# MEVN-Frontend
-The front-end for an application written with MEVN (MongoDB, ExpressJS, VueJS, NodeJS).
+# Full-Stack-MEVN
+A full-stack application written with MEVN (MongoDB, ExpressJS, VueJS, NodeJS).

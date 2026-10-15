@@ -18,7 +18,7 @@
                             id: 1,
                             name: "Mathematics",
                             location: "Ealing",
-                            price: "£120",
+                            price: 120,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/math.jpg',
@@ -29,7 +29,7 @@
                             id: 2,
                             name: "Science",
                             location: "Wembley",
-                            price: "£80",
+                            price: 80,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/science.jpg',
@@ -40,7 +40,7 @@
                             id: 3,
                             name: "History",
                             location: "Wembley",
-                            price: "£150",
+                            price: 150,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/history.jpg',
@@ -51,7 +51,7 @@
                             id: 4,
                             name: "Geography",
                             location: "Acton",
-                            price: "£90",
+                            price: 90,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/geography.jpg',
@@ -62,7 +62,7 @@
                             id: 5,
                             name: "Art",
                             location: "Ealing",
-                            price: "£70",
+                            price: 70,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/art.jpg',
@@ -73,7 +73,7 @@
                             id: 6,
                             name: "Music",
                             location: "Harrow",
-                            price: "£100",
+                            price: 100,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/music.jpg',
@@ -84,7 +84,7 @@
                             id: 7,
                             name: "English",
                             location: "Wembley",
-                            price: "£85",
+                            price: 85,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/english.jpg',
@@ -95,7 +95,7 @@
                             id: 8,
                             name: "Computing",
                             location: "Ealing",
-                            price: "£110",
+                            price: 110,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/computing.jpg',
@@ -106,7 +106,7 @@
                             id: 9,
                             name: "PE",
                             location: "Acton",
-                            price: "£60",
+                            price: 60,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/pe.jpg',
@@ -117,7 +117,7 @@
                             id: 10,
                             name: "Drama",
                             location: "Harrow",
-                            price: "£95",
+                            price: 95,
                             availableInventory: 5,
                             img_data: {
                                 image: 'images/drama.jpg',
@@ -154,7 +154,8 @@
                     return this.spotsLeft(subject) > 0
                 },
                 removeSubjectFromCart(subject){
-                    this.cart.splice(subject, 1)
+                    const index = this.cart.indexOf(subject.id)
+                    this.cart.splice(index, 1)
                 },
                 canSubmitOrder(){
                     // true only once both name and phone number have real content
@@ -196,7 +197,7 @@
                     <img v-bind:src="subject.img_data.image" v-bind:alt="subject.img_data.alt">
                     <div>
                         <h2>{{subject.name}}</h2>
-                        <p>{{subject.location}} · {{subject.price}}</p>
+                        <p>{{subject.location}} · £{{subject.price}}</p>
                         <p>{{spotsLeft(subject)}} spots left</p>
                         <button v-on:click="addItem(subject)" v-bind:disabled="!canAddToCart(subject)">Add to cart</button>
                     </div>
@@ -211,7 +212,7 @@
                 <p v-if="!cartItemCount">No classes added yet.</p>
 
                 <li v-for="subject in cartSubjects">
-                    <p>{{subject.name}} · {{subject.price}}</p>
+                    <p>{{subject.name}} · £{{subject.price}}</p>
                     <button v-on:click="removeSubjectFromCart(subject)">Remove from Cart</button>
                 </li>
                 <h2>Customer Info</h2>
