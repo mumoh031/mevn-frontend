@@ -10,6 +10,10 @@
 <body>
     <script type="module">
         const {createApp} = Vue
+
+        // the backend that serves the list of subjects
+        const API_URL = "http://localhost:8080/"
+
         const myApp = createApp({
             data(){
                 return {
@@ -19,24 +23,31 @@
                         name: "",
                         phoneNumber: "",
                     },
-                    showProduct: true
+                    showProduct: true,
+                    sortType: "price",
+                    sortAscending: true
                 }
             },
             created(){
-                this.fetchData();
+                this.fetchData()
             },
             methods: {
+                // loads the subjects list from the backend API and stores it in state
                 async fetchData(){
-                    const url = "http://localhost:8080/";
-                    let response = await (fetch (url));
-                    this.subjects = await response.json();
+                    const response = await fetch(API_URL)
+                    this.subjects = await response.json()
                 },
+                // flips between the product list view and the checkout view
                 toggleCheckout(){
                     this.showProduct = !this.showProduct
                 },
+                // books one spot for this subject by adding its id to the cart
+                // (the same id can appear more than once if multiple spots are booked)
                 addItem(subject){
                     this.cart.push(subject.id)
                 },
+                // counts how many times this subject's id is already in the cart,
+                // then subtracts that from the total inventory to get what's left
                 spotsLeft(subject){
                     let timesInCart = 0
                     for (const id of this.cart) {
@@ -46,17 +57,22 @@
                     }
                     return subject.availableInventory - timesInCart
                 },
+                // the "Add to cart" button is only enabled while spots remain
                 canAddToCart(subject){
                     return this.spotsLeft(subject) > 0
                 },
+                // removes a single booked spot for this subject from the cart
+                // (indexOf finds the id's position, splice removes just one entry there)
                 removeSubjectFromCart(subject){
                     const index = this.cart.indexOf(subject.id)
                     this.cart.splice(index, 1)
                 },
+                // true only once both name and phone number have real content
                 canSubmitOrder(){
-                    // true only once both name and phone number have real content
                     return this.order.name.trim() !== "" && this.order.phoneNumber.trim() !== ""
                 },
+                // confirms the order, then resets the cart, form fields, and view
+                // so the customer lands back on the class list ready to start over
                 submitOrder(){
                     alert(`Thanks ${this.order.name}, your order is in! We'll reach you on ${this.order.phoneNumber}.`)
                     this.cart = []
@@ -64,15 +80,18 @@
                     this.order.phoneNumber = ""
                     this.showProduct = true
                 }
-                //TODO: Add methods to sort subjects by subject, location, price, or spaces (i.e. availability)
             },
             computed: {
+                // total number of booked spots sitting in the cart
                 cartItemCount(){
                     return this.cart.length
                 },
+                // the checkout button only makes sense once something is in the cart
                 canCheckout(){
                     return this.cartItemCount > 0
                 },
+                // turns the cart's list of ids into the full subject records
+                // needed to display each one on the checkout page
                 cartSubjects(){
                     const subjectsInCart = []
                     for (const id of this.cart) {
@@ -80,10 +99,92 @@
                         subjectsInCart.push(match)
                     }
                     return subjectsInCart
+                },
+                // returns the subjects list sorted by whichever sortType and
+                // sortAscending direction the customer picked from the two dropdowns
+                sortedLessons(){
+                    // copy the array first so sort() doesn't change the original subjects list
+                    const subjectsCopy = this.subjects.slice()
+
+                    // sort() needs a function that compares two subjects (a and b) at a time.
+                    // Returning -1 means a goes first, 1 means b goes first, 0 means they're equal.
+                    // This always sorts from smallest to largest (increasing order) for now.
+                    subjectsCopy.sort((a, b) => {
+                        if (this.sortType === "subject") {
+                            if (a.name < b.name) {
+                                return -1
+                            }
+                            if (a.name > b.name) {
+                                return 1
+                            }
+                            return 0
+                        }
+
+                        if (this.sortType === "location") {
+                            if (a.location < b.location) {
+                                return -1
+                            }
+                            if (a.location > b.location) {
+                                return 1
+                            }
+                            return 0
+                        }
+
+                        if (this.sortType === "price") {
+                            if (a.price < b.price) {
+                                return -1
+                            }
+                            if (a.price > b.price) {
+                                return 1
+                            }
+                            return 0
+                        }
+
+                        if (this.sortType === "availability") {
+                            // "availability" isn't a plain field, so work it out for each subject first
+                            const spacesA = this.spotsLeft(a)
+                            const spacesB = this.spotsLeft(b)
+                            if (spacesA < spacesB) {
+                                return -1
+                            }
+                            if (spacesA > spacesB) {
+                                return 1
+                            }
+                            return 0
+                        }
+                    })
+
+                    // the sort above always puts the smallest value first. If the user picked
+                    // decreasing order instead, just turn the whole sorted list backwards.
+                    if (!this.sortAscending) {
+                        subjectsCopy.reverse()
+                    }
+
+                    return subjectsCopy
+                },
+                // label for the "increasing" option, worded to fit whichever sortType is active
+                ascendingLabel(){
+                    if (this.sortType === "price") {
+                        return "Lowest first"
+                    }
+                    if (this.sortType === "availability") {
+                        return "Fewest first"
+                    }
+                    return "A to Z"
+                },
+                // label for the "decreasing" option, worded to fit whichever sortType is active
+                descendingLabel(){
+                    if (this.sortType === "price") {
+                        return "Highest first"
+                    }
+                    if (this.sortType === "availability") {
+                        return "Most first"
+                    }
+                    return "Z to A"
                 }
             }
         })
-        myApp.mount('#mydiv');
+        myApp.mount('#mydiv')
     </script>
     <div id="mydiv">
         <div v-if="showProduct">
@@ -91,8 +192,25 @@
             <p>Available classes, taught by people who <mark>love the subject</mark>.</p>
             <button v-on:click="toggleCheckout" v-bind:disabled="!canCheckout">Checkout ({{cartItemCount}})</button>
 
+            <div class="sorting">
+                <label>Sort by
+                    <select v-model="sortType">
+                        <option value="subject">Subject</option>
+                        <option value="location">Location</option>
+                        <option value="price">Price</option>
+                        <option value="availability">Availability</option>
+                    </select>
+                </label>
+                <label>Order
+                    <select v-model="sortAscending">
+                        <option v-bind:value="true">{{ascendingLabel}}</option>
+                        <option v-bind:value="false">{{descendingLabel}}</option>
+                    </select>
+                </label>
+            </div>
+
             <ul>
-                <li v-for="subject in subjects">
+                <li v-for="subject in sortedLessons">
                     <img v-bind:src="subject.img_data.image" v-bind:alt="subject.img_data.alt">
                     <div>
                         <h2>{{subject.name}}</h2>
@@ -197,6 +315,24 @@
             background: #eee;
             color: #999;
             cursor: not-allowed;
+        }
+
+        .sorting {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 24px;
+            margin-top: 32px;
+            font-weight: 700;
+        }
+
+        select {
+            margin-left: 8px;
+            padding: 8px 16px;
+            border: 2px solid #1d1d1b;
+            border-radius: 8px;
+            background: #fff;
+            font: inherit;
+            cursor: pointer;
         }
     </style>
 </body>
