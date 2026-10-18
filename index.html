@@ -25,7 +25,8 @@
                     },
                     showProduct: true,
                     sortType: "price",
-                    sortAscending: true
+                    sortAscending: true,
+                    orderConfirmed: false
                 }
             },
             created(){
@@ -40,6 +41,9 @@
                 // flips between the product list view and the checkout view
                 toggleCheckout(){
                     this.showProduct = !this.showProduct
+                    // clear any old confirmation message so it doesn't still be showing
+                    // next time the customer comes back to checkout
+                    this.orderConfirmed = false
                 },
                 // books one spot for this subject by adding its id to the cart
                 // (the same id can appear more than once if multiple spots are booked)
@@ -67,18 +71,18 @@
                     const index = this.cart.indexOf(subject.id)
                     this.cart.splice(index, 1)
                 },
-                // true only once both name and phone number have real content
+                // true only once the cart has something in it and both
+                // name and phone number have real content
                 canSubmitOrder(){
-                    return this.order.name.trim() !== "" && this.order.phoneNumber.trim() !== ""
+                    const hasName = this.order.name.trim() !== ""
+                    const hasPhoneNumber = this.order.phoneNumber.trim() !== ""
+                    return hasName && hasPhoneNumber && this.canCheckout
                 },
-                // confirms the order, then resets the cart, form fields, and view
-                // so the customer lands back on the class list ready to start over
+                // confirms the order: empties the cart and shows the confirmation
+                // message in place of the cart and form
                 submitOrder(){
-                    alert(`Thanks ${this.order.name}, your order is in! We'll reach you on ${this.order.phoneNumber}.`)
                     this.cart = []
-                    this.order.name = ""
-                    this.order.phoneNumber = ""
-                    this.showProduct = true
+                    this.orderConfirmed = true
                 }
             },
             computed: {
@@ -223,15 +227,15 @@
         </div>
 
         <div v-else>
-            <!-- checkout page here -->
             <h1>Checkout</h1>
-            <div class="cart">
+            <p v-if="orderConfirmed" class="confirmation">Order confirmed. Thank you, {{order.name}}!</p>
+            <div v-else class="cart">
                 <p v-if="!cartItemCount">No classes added yet.</p>
 
-                <li v-for="subject in cartSubjects">
-                    <p>{{subject.name}} · £{{subject.price}}</p>
+                <p v-for="subject in cartSubjects">
+                    {{subject.name}} · £{{subject.price}}
                     <button v-on:click="removeSubjectFromCart(subject)">Remove from Cart</button>
-                </li>
+                </p>
                 <h2>Customer Info</h2>
                 <p>Name: <input v-model="order.name"></p>
                 <p>Phone Number: <input v-model="order.phoneNumber"></p>
@@ -297,7 +301,18 @@
         }
 
         .cart p {
-            margin: 4px 0 0;
+            margin: 8px 0 0;
+        }
+
+        .cart button {
+            margin: 0 0 0 16px;
+            padding: 4px 12px;
+        }
+
+        .confirmation {
+            margin: 32px 0;
+            font-size: 24px;
+            font-weight: 700;
         }
 
         button {
