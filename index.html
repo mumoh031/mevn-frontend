@@ -11,9 +11,6 @@
     <script type="module">
         const {createApp} = Vue
 
-        // the backend that serves the list of subjects
-        const API_URL = "http://localhost:8080/"
-
         const myApp = createApp({
             data(){
                 return {
@@ -35,8 +32,20 @@
             methods: {
                 // loads the subjects list from the backend API and stores it in state
                 async fetchData(){
-                    const response = await fetch(API_URL)
+                    const URL = "http://localhost:8080/lessons"
+                    const response = await fetch(URL)
                     this.subjects = await response.json()
+                },
+                async postOrder(){
+                    const URL = "http://localhost:8080/orders";
+                    const options = {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type' : 'application/json'
+                        },
+                        body : JSON.stringify(this.order)
+                    }
+                    let response = await (fetch(URL, options));
                 },
                 // flips between the product list view and the checkout view
                 toggleCheckout(){
@@ -80,9 +89,11 @@
                 },
                 // confirms the order: empties the cart and shows the confirmation
                 // message in place of the cart and form
-                submitOrder(){
+                async submitOrder(){
+                    await this.postOrder();
                     this.cart = []
                     this.orderConfirmed = true
+
                 }
             },
             computed: {
