@@ -19,6 +19,7 @@
                     order: {
                         name: "",
                         phoneNumber: "",
+                        lessonsOrdered : []
                     },
                     showProduct: true,
                     sortType: "price",
@@ -90,6 +91,7 @@
                 // confirms the order: empties the cart and shows the confirmation
                 // message in place of the cart and form
                 async submitOrder(){
+                    this.order.lessonsOrdered = this.cartSubjects;
                     await this.postOrder();
                     this.cart = []
                     this.orderConfirmed = true
