@@ -1,0 +1,102 @@
+body {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 48px 24px;
+    background: #fbf8f1;
+    color: #1d1d1b;
+    font: 18px/1.5 system-ui, sans-serif;
+}
+
+h1 {
+    margin: 0;
+    font-size: 64px;
+    font-weight: 900;
+}
+
+mark {
+    background: #ffe86a;
+}
+
+ul {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 32px;
+    padding: 0;
+    list-style: none;
+}
+
+li {
+    border: 2px solid #1d1d1b;
+    border-radius: 12px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 6px 6px 0 #1d1d1b;
+}
+
+li img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+}
+
+li div {
+    padding: 16px 24px;
+}
+
+h2, li p {
+    margin: 0;
+}
+.cart {
+    margin-bottom: 32px;
+}
+
+.cart p {
+    margin: 8px 0 0;
+}
+
+.cart button {
+    margin: 0 0 0 16px;
+    padding: 4px 12px;
+}
+
+.confirmation {
+    margin: 32px 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+button {
+    margin-top: 16px;
+    padding: 8px 16px;
+    border: 2px solid #1d1d1b;
+    border-radius: 8px;
+    background: #ffe86a;
+    font: inherit;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+button:disabled {
+    background: #eee;
+    color: #999;
+    cursor: not-allowed;
+}
+
+.sorting {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 32px;
+    font-weight: 700;
+}
+
+select {
+    margin-left: 8px;
+    padding: 8px 16px;
+    border: 2px solid #1d1d1b;
+    border-radius: 8px;
+    background: #fff;
+    font: inherit;
+    cursor: pointer;
+}
