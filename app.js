@@ -37,6 +37,22 @@ const myApp = createApp({
             }
             let response = await (fetch(URL, options));
         },
+        // saves this lesson's new number of spaces (what's left after the cart is booked)
+        async updateLesson(subject){
+            // updateBody will contain the updated number of available lessons via the spotsLeft function for said subject
+            let updateBody = {
+                availableInventory: this.spotsLeft(subject)
+            };
+            const URL = "http://localhost:8080/lessons/" + subject._id;
+            const options = {
+                method: 'PUT',
+                headers: {
+                    'Content-Type' : 'application/json'
+                },
+                body : JSON.stringify(updateBody)
+            }
+            let response = await (fetch(URL, options));
+        },
         // flips between the product list view and the checkout view
         toggleCheckout(){
             this.showProduct = !this.showProduct
@@ -82,8 +98,16 @@ const myApp = createApp({
         async submitOrder(){
             this.order.lessonsOrdered = this.cartSubjects;
             await this.postOrder();
+            // update each lesson once, before the cart is cleared,
+            // because spotsLeft() needs the cart to count what was booked
+            const orderedSubjects = new Set(this.cartSubjects)
+            for (const subject of orderedSubjects) {
+                await this.updateLesson(subject)
+            }
             this.cart = []
             this.orderConfirmed = true
+            // reload the lessons so the page shows the new spaces from the database
+            await this.fetchData()
 
         }
     },
