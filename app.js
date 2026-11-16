@@ -1,5 +1,8 @@
 const {createApp} = Vue
 
+// where the backend is deployed (use "http://localhost:8080" to test against a local server)
+const SERVER_URL = "https://m00688604-server.onrender.com"
+
 const myApp = createApp({
     data(){
         return {
@@ -22,12 +25,12 @@ const myApp = createApp({
     methods: {
         // loads the subjects list from the backend API and stores it in state
         async fetchData(){
-            const URL = "http://localhost:8080/lessons"
+            const URL = SERVER_URL + "/lessons"
             const response = await fetch(URL)
             this.subjects = await response.json()
         },
         async postOrder(){
-            const URL = "http://localhost:8080/orders";
+            const URL = SERVER_URL + "/orders";
             const options = {
                 method: 'POST',
                 headers: {
@@ -43,7 +46,7 @@ const myApp = createApp({
             let updateBody = {
                 availableInventory: this.spotsLeft(subject)
             };
-            const URL = "http://localhost:8080/lessons/" + subject._id;
+            const URL = SERVER_URL + "/lessons/" + subject._id;
             const options = {
                 method: 'PUT',
                 headers: {
