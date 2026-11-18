@@ -7,6 +7,8 @@ const myApp = createApp({
     data(){
         return {
             subjects: [],
+            searchText: "",
+            searchResults: [],
             cart: [],
             order: {
                 name: "",
@@ -21,6 +23,7 @@ const myApp = createApp({
     },
     created(){
         this.fetchData()
+        this.searchLessons()
     },
     methods: {
         // loads the subjects list from the backend API and stores it in state
@@ -28,6 +31,17 @@ const myApp = createApp({
             const URL = SERVER_URL + "/lessons"
             const response = await fetch(URL)
             this.subjects = await response.json()
+        },
+        // asks the server for the lessons matching whatever is in the search box
+        async searchLessons(){
+            const searchedFor = this.searchText
+            const URL = SERVER_URL + "/search?q=" + encodeURIComponent(searchedFor)
+            const response = await fetch(URL)
+            const results = await response.json()
+            // ignore this reply if the user has typed something else since it was sent
+            if (searchedFor === this.searchText) {
+                this.searchResults = results
+            }
         },
         async postOrder(){
             const URL = SERVER_URL + "/orders";
@@ -111,6 +125,7 @@ const myApp = createApp({
             this.orderConfirmed = true
             // reload the lessons so the page shows the new spaces from the database
             await this.fetchData()
+            await this.searchLessons()
 
         }
     },
@@ -136,8 +151,9 @@ const myApp = createApp({
         // returns the subjects list sorted by whichever sortType and
         // sortAscending direction the customer picked from the two dropdowns
         sortedLessons(){
-            // copy the array first so sort() doesn't change the original subjects list
-            const subjectsCopy = this.subjects.slice()
+            // sort the search results (all lessons when the search box is empty),
+            // copying the array first so sort() doesn't change the original list
+            const subjectsCopy = this.searchResults.slice()
 
             // sort() needs a function that compares two subjects (a and b) at a time.
             // Returning -1 means a goes first, 1 means b goes first, 0 means they're equal.

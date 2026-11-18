@@ -16,6 +16,9 @@
             <button v-on:click="toggleCheckout" v-bind:disabled="!canCheckout">Checkout ({{cartItemCount}})</button>
 
             <div class="sorting">
+                <label>Search
+                    <input v-model="searchText" v-on:input="searchLessons" placeholder="Subject, location, price...">
+                </label>
                 <label>Sort by
                     <select v-model="sortType">
                         <option value="subject">Subject</option>
