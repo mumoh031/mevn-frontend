@@ -93,6 +93,10 @@ const myApp = createApp({
             }
             return subject.availableInventory - timesInCart
         },
+        // builds the full address of a lesson's image, which is now served by the backend
+        imageAddress(subject){
+            return SERVER_URL + "/" + subject.img_data.image
+        },
         // the "Add to cart" button is only enabled while spots remain
         canAddToCart(subject){
             return this.spotsLeft(subject) > 0
