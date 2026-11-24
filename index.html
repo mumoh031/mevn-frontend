@@ -60,7 +60,9 @@
                 </p>
                 <h2>Customer Info</h2>
                 <p>Name: <input v-model="order.name"></p>
+                <p v-if="order.name && !isNameValid" class="error">Name must contain letters only.</p>
                 <p>Phone Number: <input v-model="order.phoneNumber"></p>
+                <p v-if="order.phoneNumber && !isPhoneValid" class="error">Phone must contain numbers only.</p>
 
                 <button v-on:click="submitOrder" v-bind:disabled="!canSubmitOrder()">Submit Order</button>
             </div>

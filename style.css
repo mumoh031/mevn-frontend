@@ -100,3 +100,8 @@ select {
     font: inherit;
     cursor: pointer;
 }
+
+.error {
+    color: #c0392b;
+    font-size: 0.9em;
+}

@@ -104,11 +104,9 @@ const myApp = createApp({
             this.cart.splice(index, 1)
         },
         // true only once the cart has something in it and both
-        // name and phone number have real content
+        // name and phone number pass their validation rules
         canSubmitOrder(){
-            const hasName = this.order.name.trim() !== ""
-            const hasPhoneNumber = this.order.phoneNumber.trim() !== ""
-            return hasName && hasPhoneNumber && this.canCheckout
+            return this.isNameValid && this.isPhoneValid && this.canCheckout
         },
         // confirms the order: empties the cart and shows the confirmation
         // message in place of the cart and form
@@ -130,6 +128,15 @@ const myApp = createApp({
         }
     },
     computed: {
+        // name must be letters only (single spaces allowed between words,
+        // e.g. "John Smith"); an empty name does not match
+        isNameValid(){
+            return /^[A-Za-z]+(?: [A-Za-z]+)*$/.test(this.order.name.trim())
+        },
+        // phone must be digits only; an empty phone does not match
+        isPhoneValid(){
+            return /^[0-9]+$/.test(this.order.phoneNumber.trim())
+        },
         // total number of booked spots sitting in the cart
         cartItemCount(){
             return this.cart.length
