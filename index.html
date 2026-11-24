@@ -10,42 +10,56 @@
 </head>
 <body>
     <div id="mydiv">
-        <div v-if="showProduct">
-            <h1>Classes</h1>
-            <p>Available classes, taught by people who <mark>love the subject</mark>.</p>
-            <button v-on:click="toggleCheckout" v-bind:disabled="!canCheckout">Checkout ({{cartItemCount}})</button>
+        <div v-if="showProduct" class="layout">
+            <aside class="teachers">
+                <h2>Teachers</h2>
+                <button class="teacher" v-bind:class="{ selected: selectedTeacherId === '' }" v-on:click="selectTeacher('')">All teachers</button>
+                <button class="teacher" v-for="teacher in teachers" v-bind:class="{ selected: selectedTeacherId === teacher._id }" v-on:click="selectTeacher(teacher._id)">
+                    {{teacher.firstName}} {{teacher.lastName}}
+                </button>
+            </aside>
 
-            <div class="sorting">
-                <label>Search
-                    <input v-model="searchText" v-on:input="searchLessons" placeholder="Subject, location, price...">
-                </label>
-                <label>Sort by
-                    <select v-model="sortType">
-                        <option value="subject">Subject</option>
-                        <option value="location">Location</option>
-                        <option value="price">Price</option>
-                        <option value="availability">Availability</option>
-                    </select>
-                </label>
-                <label>Order
-                    <select v-model="sortAscending">
-                        <option v-bind:value="true">{{ascendingLabel}}</option>
-                        <option v-bind:value="false">{{descendingLabel}}</option>
-                    </select>
-                </label>
-            </div>
+            <main>
+                <h1>Classes</h1>
+                <p>Available classes, taught by people who <mark>love the subject</mark>.</p>
+                <button v-on:click="toggleCheckout" v-bind:disabled="!canCheckout">Checkout ({{cartItemCount}})</button>
 
-            <ul>
-                <li v-for="subject in sortedLessons">
-                    <img v-bind:src="imageAddress(subject)" v-bind:alt="subject.img_data.alt">
-                    <div>
-                        <h2>{{subject.name}}</h2>
-                        <p>{{subject.location}} · £{{subject.price}}</p>
-                        <p>{{spotsLeft(subject)}} spots left</p>
-                        <button v-on:click="addItem(subject)" v-bind:disabled="!canAddToCart(subject)">Add to cart</button>
-                    </div>
-                </li>
-            </ul>
+                <div class="sorting">
+                    <label>Search
+                        <input v-model="searchText" v-on:input="searchLessons" placeholder="Subject, location, price...">
+                    </label>
+                    <label>Sort by
+                        <select v-model="sortType">
+                            <option value="subject">Subject</option>
+                            <option value="location">Location</option>
+                            <option value="price">Price</option>
+                            <option value="availability">Availability</option>
+                        </select>
+                    </label>
+                    <label>Order
+                        <select v-model="sortAscending">
+                            <option v-bind:value="true">{{ascendingLabel}}</option>
+                            <option v-bind:value="false">{{descendingLabel}}</option>
+                        </select>
+                    </label>
+                </div>
+
+                <p v-if="selectedTeacherName" class="teacher-heading">Showing classes taught by <mark>{{selectedTeacherName}}</mark></p>
+                <p v-if="subjects.length > 0 && sortedLessons.length === 0">No classes match.</p>
+
+                <ul>
+                    <li v-for="subject in sortedLessons">
+                        <img v-bind:src="imageAddress(subject)" v-bind:alt="subject.img_data.alt">
+                        <div>
+                            <h2>{{subject.name}}</h2>
+                            <p>{{subject.location}} · £{{subject.price}}</p>
+                            <p v-if="teacherNames(subject)" class="taught-by">Taught by {{teacherNames(subject)}}</p>
+                            <p>{{spotsLeft(subject)}} spots left</p>
+                            <button v-on:click="addItem(subject)" v-bind:disabled="!canAddToCart(subject)">Add to cart</button>
+                        </div>
+                    </li>
+                </ul>
+            </main>
         </div>
 
         <div v-else>

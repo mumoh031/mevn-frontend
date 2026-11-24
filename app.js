@@ -18,12 +18,19 @@ const myApp = createApp({
             showProduct: true,
             sortType: "price",
             sortAscending: true,
-            orderConfirmed: false
+            orderConfirmed: false,
+            // every teacher, shown in the sidebar
+            teachers: [],
+            // _id of the teacher picked in the sidebar ("" means all teachers)
+            selectedTeacherId: "",
+            // the lessons the server says the selected teacher teaches
+            teacherLessons: []
         }
     },
     created(){
         this.fetchData()
         this.searchLessons()
+        this.fetchTeachers()
     },
     methods: {
         // loads the subjects list from the backend API and stores it in state
@@ -42,6 +49,38 @@ const myApp = createApp({
             if (searchedFor === this.searchText) {
                 this.searchResults = results
             }
+        },
+        // loads every teacher for the sidebar
+        async fetchTeachers(){
+            const URL = SERVER_URL + "/teachers"
+            const response = await fetch(URL)
+            this.teachers = await response.json()
+        },
+        // picks a teacher in the sidebar and asks the server for the lessons they teach
+        // (an empty id means "All teachers", so nothing needs fetching)
+        async selectTeacher(teacherId){
+            this.selectedTeacherId = teacherId
+            if (teacherId === "") {
+                this.teacherLessons = []
+                return
+            }
+            const URL = SERVER_URL + "/teachers/" + teacherId + "/lessons"
+            const response = await fetch(URL)
+            const lessons = await response.json()
+            // ignore this reply if the user has clicked a different teacher since it was sent
+            if (teacherId === this.selectedTeacherId) {
+                this.teacherLessons = lessons
+            }
+        },
+        // the names of everyone who teaches this lesson, e.g. "Priya Shah, Tom Okafor"
+        teacherNames(subject){
+            const names = []
+            for (const teacher of this.teachers) {
+                if (teacher.lessonIds.includes(subject._id)) {
+                    names.push(teacher.firstName + " " + teacher.lastName)
+                }
+            }
+            return names.join(", ")
         },
         async postOrder(){
             const URL = SERVER_URL + "/orders";
@@ -162,9 +201,16 @@ const myApp = createApp({
         // returns the subjects list sorted by whichever sortType and
         // sortAscending direction the customer picked from the two dropdowns
         sortedLessons(){
-            // sort the search results (all lessons when the search box is empty),
-            // copying the array first so sort() doesn't change the original list
-            const subjectsCopy = this.searchResults.slice()
+            // start from the search results (all lessons when the search box is empty).
+            // filter() also makes a copy, so sort() below doesn't change the original list
+            const subjectsCopy = this.searchResults.filter(subject => {
+                // with no teacher picked, keep every lesson
+                if (this.selectedTeacherId === "") {
+                    return true
+                }
+                // otherwise keep only the lessons the selected teacher teaches
+                return this.teacherLessons.some(lesson => lesson._id === subject._id)
+            })
 
             // sort() needs a function that compares two subjects (a and b) at a time.
             // Returning -1 means a goes first, 1 means b goes first, 0 means they're equal.
@@ -221,6 +267,14 @@ const myApp = createApp({
             }
 
             return subjectsCopy
+        },
+        // full name of the teacher picked in the sidebar ("" when showing all teachers)
+        selectedTeacherName(){
+            const teacher = this.teachers.find(teacher => teacher._id === this.selectedTeacherId)
+            if (!teacher) {
+                return ""
+            }
+            return teacher.firstName + " " + teacher.lastName
         },
         // label for the "increasing" option, worded to fit whichever sortType is active
         ascendingLabel(){

@@ -1,7 +1,7 @@
 body {
-    max-width: 1000px;
-    margin: 0 auto;
-    padding: 48px 24px;
+    margin: 0;
+    /* side padding scales with the screen: 4% of the window width */
+    padding: 48px 4vw;
     background: #fbf8f1;
     color: #1d1d1b;
     font: 18px/1.5 system-ui, sans-serif;
@@ -104,4 +104,64 @@ select {
 .error {
     color: #c0392b;
     font-size: 0.9em;
+}
+
+/* lessons page: teacher sidebar on the left, classes on the right */
+.layout {
+    display: grid;
+    grid-template-columns: minmax(12rem, 15%) 1fr;
+    gap: 3vw;
+    align-items: start;
+}
+
+/* stays on screen while scrolling through the classes */
+.teachers {
+    position: sticky;
+    top: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.teachers h2 {
+    margin-bottom: 8px;
+    font-size: 1em;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.teacher {
+    margin: 0;
+    background: #fff;
+    text-align: left;
+}
+
+.teacher.selected {
+    background: #ffe86a;
+}
+
+.teacher-heading {
+    margin-top: 24px;
+}
+
+.taught-by {
+    font-size: 0.9em;
+    color: #555;
+}
+
+/* small screens: the sidebar sits above the classes as a row of buttons */
+@media (max-width: 800px) {
+    .layout {
+        grid-template-columns: 1fr;
+    }
+
+    .teachers {
+        position: static;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    .teachers h2 {
+        width: 100%;
+    }
 }
